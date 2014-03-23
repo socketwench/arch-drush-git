@@ -11,7 +11,7 @@ pkgdesc="The Drupal command-line shell, git version."
 arch=('any')
 url="https://github.com/drush-ops/drush"
 license=('GPL')
-depends=('php' 'bash')
+depends=('php' 'bash' 'php-composer')
 conflicts=('drush5' 'drush')
 install=${pkgname}.install
 source=("$pkgname"::'git://github.com/drush-ops/drush.git')
@@ -23,13 +23,11 @@ pkgver() {
 }
 
 build() {
-	cd "$pkgname"
+  cd "$pkgname"
 }
 
 package() {
-	cd "$pkgname"
-  install -d ${pkgdir}/usr/lib/drush/classes
-  cp -rf ${srcdir}/${pkgname}/classes/* ${pkgdir}/usr/lib/drush/classes/
+  cd "$pkgname"
 
   install -d ${pkgdir}/usr/lib/drush/commands
   cp -rf ${srcdir}/${pkgname}/commands/* ${pkgdir}/usr/lib/drush/commands/
@@ -49,12 +47,18 @@ package() {
   install -d ${pkgdir}/usr/lib/drush/misc
   cp -rf ${srcdir}/${pkgname}/misc/* ${pkgdir}/usr/lib/drush/misc/
 
-  install -Dm755 ./drush.php ${pkgdir}/usr/lib/drush/drush.php || return 1
+  install -d ${pkgdir}/usr/lib/drush/tests
+  cp -rf ${srcdir}/${pkgname}/tests/* ${pkgdir}/usr/lib/drush/tests/
+
+  install -Dm755 ./composer.json ${pkgdir}/usr/lib/drush/composer.json || return 1
   install -Dm755 ./drush ${pkgdir}/usr/lib/drush/drush || return 1
+  install -Dm755 ./drush.complete.sh ${pkgdir}/usr/lib/drush/drush.complete.sh || return 1
   install -Dm644 ./drush.info ${pkgdir}/usr/lib/drush/drush.info || return 1
-  install -Dm644 ./docs/drush.api.php ${pkgdir}/usr/lib/drush/drush.api.php || return 1
-  install -Dm644 ./README.md ${pkgdir}/usr/share/doc/drush/README.txt || return 1
+  install -Dm755 ./drush.php ${pkgdir}/usr/lib/drush/drush.php || return 1
   install -Dm644 ./drush_logo-black.png ${pkgdir}/usr/share/doc/drush/drush_logo-black.png || return 1
+  install -Dm644 ./README.md ${pkgdir}/usr/share/doc/drush/README.txt || return 1
+  install -Dm644 ./unish.sh ${pkgdir}/usr/share/doc/drush/unish.sh || return 1
+  install -Dm644 ./docs/drush.api.php ${pkgdir}/usr/lib/drush/drush.api.php || return 1
   install -Dm644 ./examples/example.drushrc.php ${pkgdir}/etc/drush/example.drushrc.php || return 1
   install -Dm644 ./examples/example.aliases.drushrc.php ${pkgdir}/etc/drush/example.aliases.drushrc.php || return 1
   install -Dm644 ./examples/example.drush.ini ${pkgdir}/etc/drush/example.drush.ini || return 1
