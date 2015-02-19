@@ -1,0 +1,5 @@
+drush-git*
+drush-git/*
+src
+src/*
+pkg/*
